@@ -1,0 +1,12 @@
+{
+  "name": "10 Minute HIIT Timer",
+  "short_name": "HIIT Timer",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "description": "10 minute full body HIIT workout timer",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}

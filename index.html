@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="10 minute HIIT workout timer">
+<link rel="manifest" href="manifest.json">
+<title>10 Minute HIIT</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080808;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif}
+main{max-width:980px;margin:auto;padding:20px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:16px}
+.brand{font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:#d4af37;font-weight:800}.install{display:none}
+.card{background:#111;border:1px solid #292929;border-radius:18px;padding:22px;margin-bottom:15px}
+.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:15px}.eyebrow{color:#d4af37;letter-spacing:.18em;font-size:12px;font-weight:800}
+h1{font-size:clamp(28px,5vw,48px);margin:5px 0}.phase{text-transform:uppercase;color:#aaa;font-size:13px;font-weight:800;letter-spacing:.12em}
+.exercise{font-size:clamp(28px,5vw,42px);font-weight:900;margin-top:25px}.timer{font-size:clamp(78px,13vw,130px);line-height:1;font-weight:900;font-variant-numeric:tabular-nums;margin:12px 0}
+.next{color:#999}.bar{height:9px;background:#242424;border-radius:10px;overflow:hidden;margin:22px 0}.fill{height:100%;width:0;background:#d4af37}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{border:1px solid #292929;border-radius:12px;padding:13px;text-align:center}.label{font-size:11px;color:#888;text-transform:uppercase}.value{font-size:21px;font-weight:900;margin-top:4px}
+.buttons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}button{min-height:50px;padding:0 24px;border-radius:12px;border:1px solid #444;background:#171717;color:#fff;font-weight:800;font-size:15px;cursor:pointer}button.primary{background:#d4af37;color:#080808;border-color:#d4af37}button:disabled{opacity:.45;cursor:not-allowed}
+h2{font-size:20px;margin:0 0 12px}.item{display:flex;align-items:center;gap:12px;border:1px solid #292929;padding:13px;border-radius:10px;margin:7px 0}.num{color:#d4af37;font-weight:900}.small{font-size:12px;color:#888;margin-top:14px;line-height:1.5}
+.round{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.step{border:1px solid #292929;border-radius:10px;padding:10px;text-align:center}.step b{color:#d4af37}.step small{display:block;color:#888;margin-top:4px}
+@media(max-width:720px){main{padding:12px}.grid{grid-template-columns:1fr}.round{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start}}
+@media(max-width:420px){.card{padding:17px}.timer{font-size:70px}button{width:100%}}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><div class="brand">HIIT TIMER</div><button id="install" class="install">INSTALL APP</button></div>
+<div class="grid">
+<section class="card" aria-live="polite">
+<div class="eyebrow">10 MINUTE HIIT</div>
+<h1>FULL BODY WORKOUT</h1>
+<div id="phase" class="phase">Ready to start</div>
+<div id="exercise" class="exercise">HIGH KNEES</div>
+<div id="timer" class="timer">00:40</div>
+<div id="next" class="next">Next: REST</div>
+<div class="bar"><div id="fill" class="fill"></div></div>
+<div class="stats"><div class="stat"><div class="label">Round</div><div id="round" class="value">1 / 2</div></div><div class="stat"><div class="label">Exercise</div><div id="count" class="value">1 / 5</div></div></div>
+<div class="buttons"><button id="start" class="primary">START</button><button id="pause" disabled>PAUSE</button><button id="reset">RESET</button></div>
+</section>
+<section class="card">
+<h2>Workout sequence</h2><div id="list"></div>
+<div class="small">40 seconds work + 20 seconds rest. Five exercises × two rounds = 10 minutes.</div>
+</section>
+</div>
+<section class="card">
+<h2>Round 1 and Round 2</h2>
+<div class="round" id="rounds"></div>
+</section>
+</main>
+<script>
+const exercises=["HIGH KNEES","JUMPING JACKS","JUMP SQUATS","BURPEES","MOUNTAIN CLIMBERS"];
+let i=0,r=1,s=40,work=true,running=false,timerId=null;
+const $=id=>document.getElementById(id);
+exercises.forEach((x,n)=>$("list").innerHTML+=`<div class="item"><span class="num">0${n+1}</span><strong>${x}</strong></div>`);
+for(let n=1;n<=2;n++)for(let j=0;j<5;j++)$("rounds").innerHTML+=`<div class="step"><b>${n}.${j+1}</b><br><small>${exercises[j]}<br>40s + 20s</small></div>`;
+function render(){
+ $("phase").textContent=work?"WORK":"REST"; $("exercise").textContent=exercises[i];
+ $("timer").textContent=`00:${String(s).padStart(2,"0")}`; $("round").textContent=`${r} / 2`; $("count").textContent=`${i+1} / 5`;
+ $("next").textContent=work?"Next: REST":`Next: ${i<4?exercises[i+1]:r<2?exercises[0]:"FINISH"}`;
+ $("fill").style.width=((work?(40-s):(20-s))/(work?40:20)*100)+"%";
+}
+function advance(){
+ if(work){work=false;s=20}
+ else if(i<4){i++;work=true;s=40}
+ else if(r<2){r++;i=0;work=true;s=40}
+ else {finish();return} render();
+}
+function tick(){if(!running)return;if(s>0){s--;render()}else advance()}
+function finish(){
+ running=false;clearInterval(timerId);timerId=null;$("phase").textContent="COMPLETE";$("exercise").textContent="WORKOUT COMPLETE";$("timer").textContent="10:00";$("next").textContent="Great job. Press RESET to go again";$("fill").style.width="100%";$("start").disabled=false;$("pause").disabled=true;$("pause").textContent="PAUSE";if(navigator.vibrate)navigator.vibrate([250,100,250]);
+}
+$("start").onclick=()=>{if(running)return;running=true;$("start").disabled=true;$("pause").disabled=false;$("pause").textContent="PAUSE";timerId=setInterval(tick,1000);render()};
+$("pause").onclick=()=>{if(!running){running=true;$("pause").textContent="PAUSE";timerId=setInterval(tick,1000);return}running=false;clearInterval(timerId);timerId=null;$("pause").textContent="RESUME";$("phase").textContent="PAUSED"};
+$("reset").onclick=()=>{running=false;clearInterval(timerId);timerId=null;i=0;r=1;s=40;work=true;$("start").disabled=false;$("pause").disabled=true;$("pause").textContent="PAUSE";render()};
+let deferredPrompt;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("install").style.display="block"});
+$("install").onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("install").style.display="none"}};
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));
+render();
+</script>
+</body>
+</html>
