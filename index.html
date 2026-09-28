@@ -3,81 +3,148 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080808">
-<meta name="description" content="10 minute HIIT workout timer">
+<meta name="theme-color" content="#07070a">
+<meta name="description" content="Premium 10 minute HIIT workout timer">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
-<title>10 Minute HIIT</title>
+<title>HIIT Timer</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#080808;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif}
-main{max-width:980px;margin:auto;padding:20px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:16px}
-.brand{font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:#d4af37;font-weight:800}.install{display:none}
-.card{background:#111;border:1px solid #292929;border-radius:18px;padding:22px;margin-bottom:15px}
-.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:15px}.eyebrow{color:#d4af37;letter-spacing:.18em;font-size:12px;font-weight:800}
-h1{font-size:clamp(28px,5vw,48px);margin:5px 0}.phase{text-transform:uppercase;color:#aaa;font-size:13px;font-weight:800;letter-spacing:.12em}
-.exercise{font-size:clamp(28px,5vw,42px);font-weight:900;margin-top:25px}.timer{font-size:clamp(78px,13vw,130px);line-height:1;font-weight:900;font-variant-numeric:tabular-nums;margin:12px 0}
-.next{color:#999}.bar{height:9px;background:#242424;border-radius:10px;overflow:hidden;margin:22px 0}.fill{height:100%;width:0;background:#d4af37}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{border:1px solid #292929;border-radius:12px;padding:13px;text-align:center}.label{font-size:11px;color:#888;text-transform:uppercase}.value{font-size:21px;font-weight:900;margin-top:4px}
-.buttons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}button{min-height:50px;padding:0 24px;border-radius:12px;border:1px solid #444;background:#171717;color:#fff;font-weight:800;font-size:15px;cursor:pointer}button.primary{background:#d4af37;color:#080808;border-color:#d4af37}button:disabled{opacity:.45;cursor:not-allowed}
-h2{font-size:20px;margin:0 0 12px}.item{display:flex;align-items:center;gap:12px;border:1px solid #292929;padding:13px;border-radius:10px;margin:7px 0}.num{color:#d4af37;font-weight:900}.small{font-size:12px;color:#888;margin-top:14px;line-height:1.5}
-.round{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.step{border:1px solid #292929;border-radius:10px;padding:10px;text-align:center}.step b{color:#d4af37}.step small{display:block;color:#888;margin-top:4px}
-@media(max-width:720px){main{padding:12px}.grid{grid-template-columns:1fr}.round{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start}}
-@media(max-width:420px){.card{padding:17px}.timer{font-size:70px}button{width:100%}}
+:root{
+  --bg:#07070a;--panel:rgba(22,23,30,.64);--panel-strong:rgba(25,26,34,.82);--line:rgba(255,255,255,.11);
+  --line-strong:rgba(255,255,255,.18);--text:#f7f7fb;--muted:#9698a6;--soft:#c9cad2;
+  --accent:#b8ff52;--accent-2:#70e8ff;--danger:#ff7d9a;--shadow:0 28px 80px rgba(0,0,0,.48);
+}
+*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;min-height:100%;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+button{font:inherit;color:inherit}button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+body:before,body:after{content:"";position:fixed;z-index:-2;border-radius:50%;filter:blur(70px);pointer-events:none;opacity:.28}
+body:before{width:46vw;height:46vw;min-width:320px;min-height:320px;top:-15vw;right:-12vw;background:radial-gradient(circle,#4e8cff 0,#302dff 28%,transparent 68%)}
+body:after{width:42vw;height:42vw;min-width:300px;min-height:300px;bottom:-18vw;left:-12vw;background:radial-gradient(circle,#a8ff4f 0,#25a77b 26%,transparent 67%)}
+.noise{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E")}
+.app{width:min(1180px,100%);margin:auto;padding:clamp(16px,3vw,34px);padding-bottom:40px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;font-size:13px}.brand-mark{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(145deg,#d9ff8a,#75f5b2);color:#071007;box-shadow:0 8px 28px rgba(184,255,82,.22)}.brand-mark svg{width:17px}.top-actions{display:flex;gap:8px}.icon-btn{width:42px;height:42px;padding:0;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.055);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:grid;place-items:center;cursor:pointer;transition:.2s}.icon-btn:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}.icon-btn svg{width:18px;height:18px}.install{display:none}
+.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:18px}.glass{background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border:1px solid var(--line);box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.055);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px)}
+.hero{position:relative;overflow:hidden;border-radius:32px;padding:clamp(22px,4vw,38px);min-height:650px;display:flex;flex-direction:column}.hero:before{content:"";position:absolute;inset:auto -20% -34% 15%;height:55%;background:radial-gradient(ellipse,#8aff4d1f,transparent 66%);pointer-events:none}.hero-head{position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:18px}.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:850}.title{margin:7px 0 0;font-size:clamp(27px,4.5vw,52px);line-height:.98;letter-spacing:-.045em}.sub{margin:12px 0 0;color:var(--muted);font-size:13px}.sound-state{display:flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid var(--line);border-radius:999px;background:rgba(0,0,0,.15);color:var(--soft);font-size:11px;font-weight:800;white-space:nowrap}.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.stage{position:relative;flex:1;display:flex;align-items:center;justify-content:center;padding:32px 0}.ring{--progress:0deg;width:min(390px,68vw);aspect-ratio:1;border-radius:50%;position:relative;display:grid;place-items:center;background:conic-gradient(from -90deg,var(--accent) var(--progress),rgba(255,255,255,.08) var(--progress));box-shadow:0 0 90px rgba(184,255,82,.08),inset 0 0 35px rgba(0,0,0,.45);transition:background .25s linear}.ring:before{content:"";position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle at 50% 22%,rgba(255,255,255,.06),rgba(7,7,10,.94) 61%);border:1px solid rgba(255,255,255,.09);box-shadow:inset 0 0 45px rgba(0,0,0,.7)}.ring:after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from -90deg,transparent 0 84%,rgba(255,255,255,.25) 84% 86%,transparent 86% 100%);mask:linear-gradient(#000 0 0)}.ring-content{position:relative;text-align:center;z-index:1}.phase{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:900}.timer{font-size:clamp(68px,11vw,112px);font-weight:950;line-height:.9;letter-spacing:-.07em;font-variant-numeric:tabular-nums;margin:14px 0 13px}.exercise{font-size:clamp(19px,3vw,28px);font-weight:900;letter-spacing:-.025em}.next{margin-top:7px;color:var(--muted);font-size:12px}.stage.counting .ring{animation:ringPulse .8s ease-in-out infinite}.stage.counting .timer{animation:countPop .55s ease both}.stage.complete .ring{background:conic-gradient(from -90deg,var(--accent),#70e8ff,var(--accent));animation:completeGlow 1.2s ease-in-out infinite alternate}.stage.rest .ring{filter:saturate(.82)}
+@keyframes ringPulse{50%{transform:scale(1.015);box-shadow:0 0 115px rgba(184,255,82,.14),inset 0 0 35px rgba(0,0,0,.45)}}@keyframes countPop{0%{transform:scale(.8);opacity:.2}65%{transform:scale(1.05);opacity:1}100%{transform:scale(1)}}@keyframes completeGlow{to{box-shadow:0 0 120px rgba(112,232,255,.18),inset 0 0 35px rgba(0,0,0,.45)}}
+.bottom{position:relative}.progress-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;font-weight:750;margin-bottom:8px}.bar{height:7px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;border:1px solid rgba(255,255,255,.05)}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#d9ff86 60%,var(--accent-2));border-radius:inherit;box-shadow:0 0 18px rgba(184,255,82,.25);transition:width .25s linear}.controls{display:grid;grid-template-columns:1fr 1.7fr 1fr;gap:9px;margin-top:14px}.control{min-height:52px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.055);cursor:pointer;font-size:13px;font-weight:900;transition:.2s}.control:hover:not(:disabled){transform:translateY(-1px);background:rgba(255,255,255,.09)}.control.primary{background:linear-gradient(135deg,#d9ff8a,#9eff67);border-color:transparent;color:#081006;box-shadow:0 12px 35px rgba(184,255,82,.16)}.control:disabled{opacity:.38;cursor:not-allowed}
+.side{display:flex;flex-direction:column;gap:18px}.side-card{border-radius:25px;padding:21px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.section-title{font-size:14px;font-weight:900;letter-spacing:-.01em}.pill{font-size:10px;color:var(--muted);border:1px solid var(--line);padding:6px 9px;border-radius:99px}.exercise-list{display:grid;gap:7px}.item{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid transparent;border-radius:15px;color:var(--soft);transition:.25s}.item .num{width:27px;height:27px;border-radius:9px;display:grid;place-items:center;background:rgba(255,255,255,.06);color:var(--muted);font-size:10px;font-weight:900}.item strong{font-size:12px}.item.active{background:linear-gradient(90deg,rgba(184,255,82,.1),rgba(255,255,255,.025));border-color:rgba(184,255,82,.2);color:#fff}.item.active .num{background:var(--accent);color:#0a1007}.item.done{opacity:.48}.item.done .num{color:var(--accent)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.stat{padding:13px;border-radius:15px;background:rgba(255,255,255,.045);border:1px solid var(--line)}.stat-label{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}.stat-value{font-size:18px;font-weight:900;margin-top:5px}.round-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.step{min-width:0;padding:9px 5px;text-align:center;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.025);font-size:9px;color:var(--muted);transition:.2s}.step b{display:block;color:#d8d9e0;font-size:10px}.step.active{border-color:rgba(184,255,82,.34);background:rgba(184,255,82,.08);box-shadow:inset 0 0 20px rgba(184,255,82,.035)}.step.active b{color:var(--accent)}.step.done{opacity:.4}.footnote{margin:13px 0 0;color:var(--muted);font-size:10px;line-height:1.55}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:11px 15px;border-radius:999px;background:rgba(20,21,27,.9);border:1px solid var(--line-strong);box-shadow:0 18px 50px rgba(0,0,0,.4);backdrop-filter:blur(18px);font-size:11px;font-weight:800;transition:.25s;z-index:20}.toast.show{transform:translate(-50%,0);opacity:1}.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.hero{min-height:680px}.side{display:grid;grid-template-columns:1fr 1fr}.side-card:last-child{grid-column:1/-1}}
+@media(max-width:650px){.app{padding:12px;padding-bottom:25px}.topbar{margin-bottom:11px}.hero{min-height:calc(100svh - 75px);min-height:680px;border-radius:27px;padding:19px}.title{font-size:29px}.stage{padding:22px 0}.ring{width:min(330px,82vw)}.timer{font-size:78px}.controls{grid-template-columns:1fr 1fr}.control.primary{grid-column:1/-1;grid-row:1}.side{display:flex}.side-card{border-radius:21px}.round-grid{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:390px){.hero{padding:16px}.ring{width:76vw}.timer{font-size:67px}.sub{font-size:11px}.sound-state{padding:7px 8px}.controls{gap:7px}.control{min-height:48px}.round-grid{gap:4px}.step{font-size:8px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<main>
-<div class="top"><div class="brand">HIIT TIMER</div><button id="install" class="install">INSTALL APP</button></div>
-<div class="grid">
-<section class="card" aria-live="polite">
-<div class="eyebrow">10 MINUTE HIIT</div>
-<h1>FULL BODY WORKOUT</h1>
-<div id="phase" class="phase">Ready to start</div>
-<div id="exercise" class="exercise">HIGH KNEES</div>
-<div id="timer" class="timer">00:40</div>
-<div id="next" class="next">Next: REST</div>
-<div class="bar"><div id="fill" class="fill"></div></div>
-<div class="stats"><div class="stat"><div class="label">Round</div><div id="round" class="value">1 / 2</div></div><div class="stat"><div class="label">Exercise</div><div id="count" class="value">1 / 5</div></div></div>
-<div class="buttons"><button id="start" class="primary">START</button><button id="pause" disabled>PAUSE</button><button id="reset">RESET</button></div>
+<div class="noise"></div>
+<main class="app">
+<header class="topbar">
+  <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 4h10M5 8h14M7 20h10M5 16h14"/><path d="M9 4v16M15 4v16"/></svg></span>HIIT TIMER</div>
+  <div class="top-actions">
+    <button id="soundToggle" class="icon-btn" aria-label="Toggle sound" title="Toggle sound"></button>
+    <button id="install" class="icon-btn install" aria-label="Install app" title="Install app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14"/></svg></button>
+  </div>
+</header>
+
+<div class="layout">
+<section class="hero glass" aria-live="polite">
+  <div class="hero-head">
+    <div><div class="eyebrow">10 minute session</div><h1 class="title">Full body<br>HIIT workout</h1><p class="sub">40 sec work · 20 sec rest · 2 rounds</p></div>
+    <div class="sound-state"><span class="dot" id="soundDot"></span><span id="soundLabel">SOUND ON</span></div>
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="ring" class="ring" style="--progress:0deg">
+      <div class="ring-content">
+        <div id="phase" class="phase">Ready</div>
+        <div id="timer" class="timer">00:40</div>
+        <div id="exercise" class="exercise">HIGH KNEES</div>
+        <div id="next" class="next">Next: Rest</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="progress-meta"><span id="progressText">Session progress</span><span id="elapsedText">0:00 / 10:00</span></div>
+    <div class="bar"><div id="fill" class="fill"></div></div>
+    <div class="controls"><button id="reset" class="control">RESET</button><button id="start" class="control primary">START WORKOUT</button><button id="pause" class="control" disabled>PAUSE</button></div>
+  </div>
 </section>
-<section class="card">
-<h2>Workout sequence</h2><div id="list"></div>
-<div class="small">40 seconds work + 20 seconds rest. Five exercises × two rounds = 10 minutes.</div>
-</section>
+
+<aside class="side">
+  <section class="side-card glass">
+    <div class="section-head"><div class="section-title">Workout sequence</div><div class="pill">5 exercises</div></div>
+    <div id="list" class="exercise-list"></div>
+    <div class="stats"><div class="stat"><div class="stat-label">Round</div><div id="round" class="stat-value">1 / 2</div></div><div class="stat"><div class="stat-label">Exercise</div><div id="count" class="stat-value">1 / 5</div></div></div>
+    <p class="footnote">Audio cues and vibration make transitions easier to follow without watching the screen.</p>
+  </section>
+
+  <section class="side-card glass">
+    <div class="section-head"><div class="section-title">Session map</div><div class="pill">10:00</div></div>
+    <div id="rounds" class="round-grid"></div>
+    <p class="footnote">Green marks the active interval. Completed intervals fade into the background.</p>
+  </section>
+</aside>
 </div>
-<section class="card">
-<h2>Round 1 and Round 2</h2>
-<div class="round" id="rounds"></div>
-</section>
 </main>
+<div id="toast" class="toast" role="status"></div>
 <script>
 const exercises=["HIGH KNEES","JUMPING JACKS","JUMP SQUATS","BURPEES","MOUNTAIN CLIMBERS"];
-let i=0,r=1,s=40,work=true,running=false,timerId=null;
+const WORK=40,REST=20,ROUNDS=2,TOTAL=600;
+let i=0,r=1,seconds=WORK,work=true,running=false,raf=0,phaseEndsAt=0,sessionStartedAt=0,elapsed=0,lastAnnouncedSecond=null,audioCtx=null,soundOn=true,deferredPrompt=null;
 const $=id=>document.getElementById(id);
-exercises.forEach((x,n)=>$("list").innerHTML+=`<div class="item"><span class="num">0${n+1}</span><strong>${x}</strong></div>`);
-for(let n=1;n<=2;n++)for(let j=0;j<5;j++)$("rounds").innerHTML+=`<div class="step"><b>${n}.${j+1}</b><br><small>${exercises[j]}<br>40s + 20s</small></div>`;
+
+const icons={soundOn:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>`,soundOff:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 18 18M11 5 6 9H3v6h3l5 4V5Z"/></svg>`};
+
+exercises.forEach((name,n)=>{$("list").insertAdjacentHTML("beforeend",`<div class="item" data-exercise="${n}"><span class="num">${String(n+1).padStart(2,"0")}</span><strong>${name}</strong></div>`)});
+for(let round=1;round<=ROUNDS;round++)for(let j=0;j<exercises.length;j++)$("rounds").insertAdjacentHTML("beforeend",`<div class="step" data-step="${(round-1)*5+j}"><b>${round}.${j+1}</b><span>${exercises[j]}</span></div>`);
+
+function formatTime(value){const s=Math.max(0,Math.ceil(value));return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
+function ensureAudio(){if(!soundOn)return;if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==="suspended")audioCtx.resume()}
+function tone(freq,duration=.12,delay=0,type="sine",gain=.045){if(!soundOn)return;ensureAudio();if(!audioCtx)return;const now=audioCtx.currentTime+delay,o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(gain,now+.015);g.gain.exponentialRampToValueAtTime(.0001,now+duration);o.connect(g).connect(audioCtx.destination);o.start(now);o.stop(now+duration+.02)}
+function cue(type){if(!soundOn)return;if(type==="count"){tone(640,.09,0,"sine",.035);tone(880,.12,.09,"sine",.045)}else if(type==="work"){tone(520,.12,0,"triangle",.04);tone(780,.18,.11,"triangle",.055)}else if(type==="rest"){tone(380,.15,0,"sine",.035);tone(280,.22,.14,"sine",.045)}else if(type==="complete"){[660,880,1040].forEach((f,n)=>tone(f,.22,n*.13,"triangle",.05))}}
+function vibrate(pattern){if(navigator.vibrate)navigator.vibrate(pattern)}
+function showToast(message){$("toast").textContent=message;$("toast").classList.add("show");clearTimeout(showToast.t);showToast.t=setTimeout(()=>$("toast").classList.remove("show"),1600)}
+
 function render(){
- $("phase").textContent=work?"WORK":"REST"; $("exercise").textContent=exercises[i];
- $("timer").textContent=`00:${String(s).padStart(2,"0")}`; $("round").textContent=`${r} / 2`; $("count").textContent=`${i+1} / 5`;
- $("next").textContent=work?"Next: REST":`Next: ${i<4?exercises[i+1]:r<2?exercises[0]:"FINISH"}`;
- $("fill").style.width=((work?(40-s):(20-s))/(work?40:20)*100)+"%";
+  const duration=work?WORK:REST;
+  $("phase").textContent=work?"WORK":"REST";
+  $("exercise").textContent=work?exercises[i]:"BREATHE & RECOVER";
+  $("timer").textContent=formatTime(seconds);
+  $("round").textContent=`${r} / ${ROUNDS}`;
+  $("count").textContent=`${i+1} / ${exercises.length}`;
+  $("next").textContent=work?"Next: Rest":`Next: ${i<4?exercises[i+1]:r<ROUNDS?exercises[0]:"Finish"}`;
+  const phaseProgress=Math.max(0,Math.min(1,(duration-seconds)/duration));
+  $("ring").style.setProperty("--progress",`${phaseProgress*360}deg`);
+  const totalElapsed=running?elapsed:elapsed;
+  $("fill").style.width=`${Math.min(100,totalElapsed/TOTAL*100)}%`;
+  $("elapsedText").textContent=`${formatTime(totalElapsed)} / 10:00`;
+  $("progressText").textContent=work?`Round ${r} · Work interval`:`Round ${r} · Recovery`;
+  $("stage").classList.toggle("rest",!work);$("stage").classList.toggle("complete",!running&&r===ROUNDS&&i===4&&!work&&seconds<=0);
+  document.querySelectorAll(".item").forEach((el,n)=>el.classList.toggle("active",n===i&&work&&running));
+  document.querySelectorAll(".item").forEach((el,n)=>el.classList.toggle("done",n<i||r>1&&n<i));
+  const activeStep=(r-1)*5+i;
+  document.querySelectorAll(".step").forEach((el,n)=>{el.classList.toggle("active",n===activeStep);el.classList.toggle("done",n<activeStep)});
 }
-function advance(){
- if(work){work=false;s=20}
- else if(i<4){i++;work=true;s=40}
- else if(r<2){r++;i=0;work=true;s=40}
- else {finish();return} render();
-}
-function tick(){if(!running)return;if(s>0){s--;render()}else advance()}
-function finish(){
- running=false;clearInterval(timerId);timerId=null;$("phase").textContent="COMPLETE";$("exercise").textContent="WORKOUT COMPLETE";$("timer").textContent="10:00";$("next").textContent="Great job. Press RESET to go again";$("fill").style.width="100%";$("start").disabled=false;$("pause").disabled=true;$("pause").textContent="PAUSE";if(navigator.vibrate)navigator.vibrate([250,100,250]);
-}
-$("start").onclick=()=>{if(running)return;running=true;$("start").disabled=true;$("pause").disabled=false;$("pause").textContent="PAUSE";timerId=setInterval(tick,1000);render()};
-$("pause").onclick=()=>{if(!running){running=true;$("pause").textContent="PAUSE";timerId=setInterval(tick,1000);return}running=false;clearInterval(timerId);timerId=null;$("pause").textContent="RESUME";$("phase").textContent="PAUSED"};
-$("reset").onclick=()=>{running=false;clearInterval(timerId);timerId=null;i=0;r=1;s=40;work=true;$("start").disabled=false;$("pause").disabled=true;$("pause").textContent="PAUSE";render()};
-let deferredPrompt;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("install").style.display="block"});
-$("install").onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("install").style.display="none"}};
-if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));
-render();
+function setPhase(nextWork,nextI,nextR,nextSeconds){work=nextWork;i=nextI;r=nextR;seconds=nextSeconds;lastAnnouncedSecond=null;cue(work?"work":"rest");vibrate([35]);render()}
+function finish(){running=false;cancelAnimationFrame(raf);elapsed=TOTAL;seconds=0;work=false;cue("complete");vibrate([120,80,120,80,280]);$("phase").textContent="COMPLETE";$("exercise").textContent="WORKOUT COMPLETE";$("timer").textContent="10:00";$("next").textContent="You finished all 10 minutes";$("start").disabled=false;$("pause").disabled=true;$("pause").textContent="PAUSE";render()}
+function frame(now){if(!running)return;const remaining=Math.max(0,(phaseEndsAt-now)/1000);seconds=Math.ceil(remaining);elapsed=Math.min(TOTAL,TOTAL-(remaining)+(r-1)*60+(i*60)+(work?0:40));
+  const rounded=Math.ceil(remaining);if(rounded<=3&&rounded>0&&rounded!==lastAnnouncedSecond){lastAnnouncedSecond=rounded;cue("count");vibrate([20])}
+  if(remaining<=0){if(work){setPhase(false,i,r,REST)}else if(i<4){setPhase(true,i+1,r,WORK)}else if(r<ROUNDS){setPhase(true,0,r+1,WORK)}else{finish();return}phaseEndsAt=now+(work?WORK:REST)*1000}
+  render();raf=requestAnimationFrame(frame)}
+function startWorkout(){if(running)return;ensureAudio();running=true;sessionStartedAt=performance.now();phaseEndsAt=performance.now()+seconds*1000;$("start").disabled=true;$("pause").disabled=false;$("pause").textContent="PAUSE";$("stage").classList.add("counting");cue("work");showToast("Workout started");raf=requestAnimationFrame(frame)}
+function pauseWorkout(){if(!running){ensureAudio();running=true;phaseEndsAt=performance.now()+seconds*1000;$("pause").textContent="PAUSE";$("stage").classList.add("counting");raf=requestAnimationFrame(frame);showToast("Workout resumed");return}running=false;cancelAnimationFrame(raf);seconds=Math.max(1,Math.ceil((phaseEndsAt-performance.now())/1000));$("pause").textContent="RESUME";$("stage").classList.remove("counting");$("phase").textContent="PAUSED";showToast("Workout paused");render()}
+function resetWorkout(){running=false;cancelAnimationFrame(raf);i=0;r=1;seconds=WORK;work=true;elapsed=0;lastAnnouncedSecond=null;$("start").disabled=false;$("pause").disabled=true;$("pause").textContent="PAUSE";$("stage").classList.remove("counting","complete");render();showToast("Workout reset")}
+
+$("start").onclick=startWorkout;$("pause").onclick=pauseWorkout;$("reset").onclick=resetWorkout;
+$("soundToggle").onclick=()=>{soundOn=!soundOn;$("soundToggle").innerHTML=soundOn?icons.soundOn:icons.soundOff;$("soundLabel").textContent=soundOn?"SOUND ON":"SOUND OFF";$("soundDot").style.background=soundOn?"var(--accent)":"#666";$("soundDot").style.boxShadow=soundOn?"0 0 12px var(--accent)":"none";if(soundOn){ensureAudio();tone(720,.1)}showToast(soundOn?"Sound enabled":"Sound muted")};
+window.addEventListener("keydown",e=>{if(e.code==="Space"){e.preventDefault();running?pauseWorkout():startWorkout()}if(e.key.toLowerCase()==="r")resetWorkout()});
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("install").style.display="grid"});
+$("install").onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("install").style.display="none"};
+window.addEventListener("appinstalled",()=>{$("install").style.display="none";showToast("App installed")});
+$("soundToggle").innerHTML=icons.soundOn;render();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
 </html>

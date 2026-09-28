@@ -1,11 +1,13 @@
 {
-  "name": "10 Minute HIIT Timer",
+  "name": "HIIT Timer | 10 Minute Full Body",
   "short_name": "HIIT Timer",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#080808",
-  "theme_color": "#080808",
-  "description": "10 minute full body HIIT workout timer",
+  "background_color": "#07070a",
+  "theme_color": "#07070a",
+  "description": "Premium 10 minute full body HIIT workout timer with sound cues and vibration feedback.",
+  "orientation": "portrait-primary",
   "icons": [
     {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
   ]
